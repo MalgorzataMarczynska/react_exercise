@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { nanoid } from "nanoid";
 import "./App.css";
 import { TaskList } from "./components/TaskList/TaskList";
@@ -11,7 +11,11 @@ const initialState = [
   { id: "task-3", text: "Learn React", status: "in progress" },
 ];
 function App() {
-  const [tasks, setTasks] = useState(initialState);
+  const [tasks, setTasks] = useState(() => {
+    const taskList = window.localStorage.getItem("tasks-list");
+    const parsedTaskList = JSON.parse(taskList);
+    return parsedTaskList?.length > 0 ? parsedTaskList : initialState;
+  });
 
   const removeItem = (id) => {
     const actualTasks = tasks.filter((task) => task.id !== id);
@@ -21,7 +25,6 @@ function App() {
     const checkedTask = tasks.find((task) => task.id === id);
     const updatedTask = { ...checkedTask, status: "completed" };
     const tasksWIthoutId = tasks.filter((task) => task.id !== id);
-    // const newTasks = [...tasksWIthoutId, updatedTask];
     setTasks([...tasksWIthoutId, updatedTask]);
   };
 
@@ -34,7 +37,19 @@ function App() {
     setTasks([...tasks, newTask]);
     form.reset();
   };
-
+  useEffect(() => {
+    const taskList = window.localStorage.getItem("tasks-list");
+    if (!taskList) return;
+    try {
+      setTasks(JSON.parse(taskList));
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+  useEffect(() => {
+    const stringifyTaskList = JSON.stringify(tasks);
+    window.localStorage.setItem("tasks-list", stringifyTaskList);
+  }, [tasks]);
   const undoneTasks = tasks.filter((task) => task.status === "in progress");
   const completedTasks = tasks.filter((task) => task.status === "completed");
 

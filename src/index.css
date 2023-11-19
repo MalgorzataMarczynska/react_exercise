@@ -75,3 +75,10 @@ li {
   flex-direction: row;
   list-style: none;
 }
+li > p {
+  padding: 0 1em;
+}
+input {
+  padding: 0.75em 1em;
+  margin-left: 1em;
+}
