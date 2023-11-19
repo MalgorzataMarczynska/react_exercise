@@ -3,11 +3,9 @@ export const TaskItem = ({ array, remove, completed }) =>
   array.map((task) => {
     return (
       <li key={task.id}>
-        {task.status === "in progress" && (
-          <button type="button" onClick={() => completed(task.id)}>
-            Done
-          </button>
-        )}
+        <button type="button" onClick={() => completed(task.id)}>
+          {task.completed ? "Undone" : "Done"}
+        </button>
         <p>{task.text}</p>
         <button type="button" onClick={() => remove(task.id)}>
           Delete
